@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create a simple RHEL7 instance and make accessible through bastion.
+Metadata:
+    Name: ec2-simple-instance-pattern
+    Version: 0.0.1
+Resources:
+    ThisEc2Instance:
+        Type: AWS::EC2::Instance
+        Properties:
+            ImageId:  ami-e9019a91
+            InstanceType: t2.micro
+            KeyName: jwmitchell-bastion
+            SubnetId: subnet-01e990e1ef468accb
+            SecurityGroupIds:
+            - sg-06078a5917179df5f
+            Tags:
+                -
+                    Key: Name
+                    Value: test-jwm3
+Outputs:
+    ThisInstanceId:
+        Description: ID of the created instance
+        Value:
+            Ref: ThisEc2Instance
+    ThisAz:
+        Description: AZ of the new instance
+        Value:
+            Fn::GetAtt: [ ThisEc2Instance, AvailabilityZone ]

@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create a simple RHEL7 instance and make accessible through bastion.
+Metadata:
+    Name: ec2-simple-instance-pattern
+    Version: 0.0.1
+Parameters:
+    GesAmiId:
+        Description: The AMI ID of the most recent GES AMI for this region
+        Default: ami-e9019a91
+        Type: String
+    Name:
+        Description: Instance name
+        Default: test-jwm4
+        Type: String
+    Type:
+        Description: Instance type
+        Default: t2.micro
+        Type: String
+    VpcId:
+        Description: VPC ID
+        Type: AWS::EC2::VPC::Id
+    SubnetId:
+        Description: Subnet ID
+        Default: subnet-01e990e1ef468accb
+        Type: String
+    AZ:
+        Description: Availability Zone
+        Default: us-west-2a
+        Type: String
+    KeyName:
+        Description: Key name
+        Type: AWS::EC2::KeyPair::KeyName
+    SecurityGroup:
+        Description: Security groups
+        Default: sg-06078a5917179df5f
+        Type: String
+Resources:
+    ThisEc2Instance:
+        Type: AWS::EC2::Instance
+        Properties:
+            ImageId:  !Ref GesAmiId
+            InstanceType: !Ref Type
+            KeyName: !Ref KeyName
+            SubnetId: !Ref SubnetId
+            SecurityGroupIds:
+            - !Ref SecurityGroup
+            Tags:
+                -
+                    Key: Name
+                    Value: !Ref Name
+Outputs:
+    ThisInstanceId:
+        Description: ID of the created instance
+        Value:
+            Ref: ThisEc2Instance
+    ThisAz:
+        Description: AZ of the new instance
+        Value:
+            Fn::GetAtt: [ ThisEc2Instance, AvailabilityZone ]
